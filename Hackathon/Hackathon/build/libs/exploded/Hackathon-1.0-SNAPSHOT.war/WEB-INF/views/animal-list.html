@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách loài thú</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .header, .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #e8f0d5;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            background-color: #f6dccd;
+            margin-top: 20px;
+        }
+
+        .top-bar {
+            margin-bottom: 15px;
+        }
+
+        .top-bar form {
+            display: inline-block;
+        }
+
+        .top-bar a {
+            margin-left: 20px;
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid #999;
+            background-color: #f3f3f3;
+            color: black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        table, th, td {
+            border: 1px solid #999;
+        }
+
+        th, td {
+            padding: 8px;
+        }
+
+        img {
+            width: 90px;
+            height: 60px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .message-success {
+            color: green;
+            margin-bottom: 10px;
+        }
+
+        .message-error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .empty-message {
+            color: #555;
+            font-style: italic;
+        }
+
+        .action-link {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <b>Header</b>
+</div>
+
+<div class="top-bar">
+    <form th:action="@{/animals}" method="get">
+        <input type="text" name="keyword" placeholder="Search ..." th:value="${keyword}">
+        <button type="submit">Search</button>
+    </form>
+
+    <a th:href="@{/animals/create}">Add</a>
+</div>
+
+<div th:if="${successMessage}" class="message-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="message-error" th:text="${errorMessage}"></div>
+
+<div th:if="${#lists.isEmpty(animals)}" class="empty-message">
+    Hiện chưa có loài thú nào trong vườn thú
+</div>
+
+<table th:if="${!#lists.isEmpty(animals)}">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Name</th>
+        <th>Species</th>
+        <th>Age</th>
+        <th>Image</th>
+        <th colspan="2">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="animal, stat : ${animals}">
+        <td th:text="${stat.count}"></td>
+        <td th:text="${animal.name}"></td>
+        <td th:text="${animal.species}"></td>
+        <td th:text="${animal.age}"></td>
+        <td>
+            <img th:src="${animal.animalImage != null and !#strings.isEmpty(animal.animalImage)}
+                         ? '/images/' + animal.animalImage
+                         : '/images/default'"
+                 alt="animal image">
+        </td>
+        <td>
+            <a class="action-link" th:href="@{/animals/edit/{id}(id=${animal.id})}">Sửa</a>
+        </td>
+        <td>
+            <form th:action="@{/animals/delete/{id}(id=${animal.id})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">Xóa</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <b>Footer</b>
+</div>
+
+</body>
+</html>

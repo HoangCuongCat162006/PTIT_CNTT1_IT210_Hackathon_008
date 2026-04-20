@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Animal Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .form-container {
+            width: 450px;
+            margin: 0 auto;
+            border: 1px solid #999;
+            padding: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            margin-top: 5px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-group button,
+        .button-group a {
+            padding: 8px 18px;
+            text-decoration: none;
+            border: 1px solid #999;
+            background-color: #dbe9c9;
+            color: black;
+            margin: 0 5px;
+        }
+
+        .preview-img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<p style="text-align:center; font-style: italic;">(Hình ảnh minh họa về trang chủ)</p>
+
+<div class="form-container">
+    <h2>Animal Form</h2>
+
+    <form th:action="@{${formAction}}"
+          th:object="${animal}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <label>ID:</label>
+        <input type="text" th:value="*{id}" readonly placeholder="Nhập id ...">
+
+        <label>Name:</label>
+        <input type="text" th:field="*{name}" placeholder="Nhập name ...">
+        <div class="error" th:errors="*{name}"></div>
+
+        <label>Species:</label>
+        <input type="text" th:field="*{species}" placeholder="Nhập species ...">
+        <div class="error" th:errors="*{species}"></div>
+
+        <label>Age:</label>
+        <input type="number" th:field="*{age}" placeholder="Nhập age ...">
+        <div class="error" th:errors="*{age}"></div>
+
+        <label>Image:</label>
+        <input type="file" name="imageFile">
+        <div class="error" th:errors="*{animalImage}"></div>
+
+        <div th:if="${animal.animalImage != null and !#strings.isEmpty(animal.animalImage)}">
+            <img class="preview-img"
+                 th:src="@{/images/{fileName}(fileName=${animal.animalImage})}"
+                 alt="preview">
+        </div>
+
+        <div class="button-group">
+            <button type="submit">Submit</button>
+            <a th:href="@{/animals}">Back</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
